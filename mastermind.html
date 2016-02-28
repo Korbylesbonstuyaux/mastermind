@@ -123,25 +123,150 @@
         var grid = document.getElementById("grid");
         var again = document.getElementById("reset");
 
+        var upto = {
+          0: {
+            firstname: "Adeline",
+            photo: "Adeline.jpg"
+          },
+          1: {
+            firstname: "Brice",
+            photo: "Brice.jpg"
+          },
+          2: {
+            firstname: "Damien",
+            photo: "Damien.jpg"
+          },
+          3: {
+            firstname: "Emeline",
+            photo: "Emeline.jpg"
+          },
+          4: {
+            firstname: "Emilie",
+            photo: "Emilie.jpg"
+          },
+          5: {
+            firstname: "Emmanuel",
+            photo: "Emmanuel.jpg"
+          },
+          6: {
+            firstname: "Gaëlle",
+            photo: "Gaëlle.jpg"
+          },
+          7: {
+            firstname: "Jean-Luc",
+            photo: "Jean-Luc F.jpg"
+          },
+          8: {
+            firstname: "Jean-Luc",
+            photo: "Jean-Luc K.jpg"
+          },
+          9: {
+            firstname: "Maximilien",
+            photo: "Maximilien.jpg"
+          },
+          10: {
+            firstname: "Melvin",
+            photo: "Melvin.jpg"
+          },
+          11: {
+            firstname: "Nicolas",
+            photo: "Nicolas.jpg"
+          },
+          12: {
+            firstname: "Pierre-Anthony",
+            photo: "Pierre-Anthony.jpg"
+          },
+          13: {
+            firstname: "Sandrèz",
+            photo: "Sandrèz.jpg"
+          },
+          14: {
+            firstname: "Stéphane",
+            photo: "Stéphane.jpg"
+          },
+          15: {
+            firstname: "Théo",
+            photo: "Théo.jpg"
+          },
+          16: {
+            firstname: "Thomas",
+            photo: "Thomas M.jpg"
+          },
+          17: {
+            firstname: "Thomas",
+            photo: "Thomas V.jpg"
+          },
+          18: {
+            firstname: "Yannick",
+            photo: "Yannick.jpg"
+          },
+          19: {
+            firstname: "Zoulikha",
+            photo: "Zoulikha.jpg"
+          }
+        };
+
         var colors_tab = ["pion1", "pion2", "pion3", "pion4", "pion5", "pion6", "pion7", "pion8"];
         var current_color = 0;
         var current_line = 0;
-        var max_lines = 3;
+        var max_lines = 10;
         var tab;
 
         var win = [0, 0, 0, 0];
         var nb_red = 0;
         var nb_white = 0;
 
+        // document.getElementsByClassName("pion1")[0].style.background = "url('./photo/Adeline.jpg') center center no-repeat";
+        // document.getElementsByClassName("pion1")[1].style.background = "url('./photo/Adeline.jpg') center center no-repeat";
+        // $(".pion1").css("background", "url('./photo/Adeline.jpg') center center no-repeat");
+
+        var pions = [0, 0, 0, 0, 0, 0, 0, 0];
+
+        function generatePion()
+        {
+          var choice = [];
+
+          for (var i = 0; i < 20; i++)
+          {
+            choice.push(i);
+          }
+
+          var min = 0;
+          var max = 19;
+
+          for (var i = 0; i < 8; i++)
+          {
+            c = Math.floor(Math.random()*(max - min + 1) + min);
+            pions[i] = choice[c];
+            choice.splice(c, 1)
+            max -= 1;
+          }
+        }
+
+        function transformPionCSS()
+        {
+          for (var i = 0; i < 8; i++)
+          {
+            var pion = document.getElementsByClassName("pion"+(i+1));
+
+            for (var j = 0; j < pion.length; j++)
+            {
+              pion[j].style.background = "url('./photo/"+upto[pions[i]].photo+"') center center no-repeat";
+            }
+          }
+        }
+
         function reset()
         {
             initArray();
             generateCode();
+            generatePion();
             createAllLines();
             current_line = 0;
             nb_red = 0;
             nb_white = 0;
             hideResponse();
+            transformPionCSS();
         }
 
         function initArray()
@@ -509,6 +634,7 @@
           {
             current_color = RegExp.$1 - 1;
             select_color.className = "color circle "+colors_tab[current_color];
+            transformPionCSS();
           }
         }
 
@@ -525,6 +651,7 @@
             }
             else document.getElementById(id).childNodes[0].className = "color circle "+colors_tab[current_color];
 
+            transformPionCSS();
 
             if(/^l([0-9]{1,2})c([0-9]{1,2})$/.test(id))
             {
@@ -597,6 +724,7 @@
                 if(hasWon())
                 {
                   showResponse();
+                  transformPionCSS();
                   alert('FELICITATION, VOUS AVEZ GAGNE !');
                 }
                 else
@@ -605,6 +733,7 @@
                       {
                         lockLine(current_line+1);
                         showResponse();
+                        transformPionCSS();
                         alert('DOMMAGE, VOUS AVEZ PERDU !');
                       }
                       else nextLine();
@@ -613,7 +742,8 @@
         }
 
         reset();
-        showResponse();
+        // showResponse();
+        // transformPionCSS();
 
       </script>
   </body>
