@@ -1,0 +1,142 @@
+body {
+
+}
+
+#game {
+  text-align: center;
+}
+
+h1, h2 {
+  text-transform: uppercase;
+}
+
+h3 {
+  margin-top: 0px;
+}
+
+.circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+#colors .circle {
+  width: 50px;
+  height: 50px;
+}
+
+#current-color {
+  width: 100px;
+  height: 100px;
+}
+
+#current-color {
+  border: 1px solid black;
+}
+
+#colors, #response, #reset {
+  margin-top: 25px;
+}
+
+#verif {
+  margin-bottom: 5px;
+}
+
+.color {
+  display: inline-block;
+}
+
+.pion1 {
+  background-color: blue;
+}
+
+.pion2 {
+  background-color: green;
+}
+
+.pion3 {
+  background-color: yellow;
+}
+
+.pion4 {
+  background-color: red;
+}
+
+.pion5 {
+  background-color: #FF8C00;
+}
+
+.pion6 {
+  background-color: #C0C0C0;
+}
+
+.pion7 {
+  background-color: #FF1493;
+}
+
+.pion8 {
+  background-color: #E0FFFF;
+}
+
+.red {
+  background-color: red;
+}
+
+.white {
+  background-color: white;
+}
+
+.none {
+  background-color: transparent;
+}
+
+.border {
+  border: 1px solid black;
+}
+
+.circle {
+  width: 50px;
+  height: 50px;
+}
+
+.case {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  background-color: #FDF5E6;
+  position: relative;
+}
+
+#grid .info {
+  display: inline-block;
+  vertical-align: top;
+  line-height: 50px !important;
+}
+
+#grid .info h3 {
+  margin: 0;
+  line-height: 50px !important;
+}
+
+.solution .circle {
+  width: 25px !important;
+  height: 25px !important;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.solution button {
+  height: 50px;
+  margin-top: 5px;
+}
+
+.active {
+  background-color: rgba(255, 255, 0, 0.5);
+}
+
+.line {
+  height: 50px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

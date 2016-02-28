@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mastermind</title>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="mastermind.css">
+  </head>
+  <body>
+      <div id="game">
+        <div class="container">
+          <div class="row">
+            <h1>MASTERMIND</h1>
+            <div id="menu" class="col-sm-4">
+              <h2>Menu</h2>
+              <h3>Pion choisi </h3>
+              <div id="current-color" class="color circle pion1">
+              </div>
+              <div id="colors" class="row">
+                <h3>Choix du pion </h3>
+                <div class="col-xs-3">
+                  <div id="c1" class="color circle pion1">
+                  </div>
+                </div>
+                <div class="col-xs-3">
+                  <div id="c2" class="color circle pion2">
+                  </div>
+                </div>
+                <div class="col-xs-3">
+                  <div id="c3" class="color circle pion3">
+                  </div>
+                </div>
+                <div class="col-xs-3">
+                  <div id="c4" class="color circle pion4">
+                  </div>
+                </div>
+                <div class="col-xs-3">
+                  <div id="c5" class="color circle pion5">
+                  </div>
+                </div>
+                <div class="col-xs-3">
+                  <div id="c6" class="color circle pion6">
+                  </div>
+                </div>
+                <div class="col-xs-3">
+                  <div id="c7" class="color circle pion7">
+                  </div>
+                </div>
+                <div class="col-xs-3">
+                  <div id="c8" class="color circle pion8">
+                  </div>
+                </div>
+              </div>
+              <div id="response" class="row">
+                <div class="col-xs-12 response">
+                  <h3>Solution</h3>
+                  <div id="r1c1" class="case">
+                    <div class="color circle none">
+                    </div>
+                  </div>
+                  <div id="r1c2" class="case">
+                    <div class="color circle none">
+                    </div>
+                  </div>
+                  <div id="r1c3" class="case">
+                    <div class="color circle none">
+                    </div>
+                  </div>
+                  <div id="r1c4" class="case">
+                    <div class="color circle none">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button id="reset" class="btn btn-lg" type="button" name="button">Recommencer</button>
+            </div>
+            <div id="table" class="col-sm-8">
+              <h2>Jeu</h2>
+              <div id="grid" class="col-xs-12">
+                <div id="l1" class="row active">
+                  <div class="col-xs-12 col-sm-8 line">
+                    <div class="info pull-left">
+                    </div>
+                    <div id="l1c1" class="case">
+                      <div class="color circle none">
+                      </div>
+                    </div>
+                    <div id="l1c2" class="case">
+                      <div class="color circle none">
+                      </div>
+                    </div>
+                    <div id="l1c3" class="case">
+                      <div class="color circle none">
+                      </div>
+                    </div>
+                    <div id="l1c4" class="case">
+                      <div class="color circle none">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-4 solution">
+                    <button id="verif" class="verif btn btn-lg" type="button" name="button" disabled>Vérifier</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <!-- Include all compiled plugins (below), or include individual files as needed -->
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+        var game = document.getElementById("game");
+        var colors = document.getElementById("colors");
+        var select_color = document.getElementById("current-color");
+        var grid = document.getElementById("grid");
+        var again = document.getElementById("reset");
+
+        var colors_tab = ["pion1", "pion2", "pion3", "pion4", "pion5", "pion6", "pion7", "pion8"];
+        var current_color = 0;
+        var current_line = 0;
+        var max_lines = 3;
+        var tab;
+
+        var win = [0, 0, 0, 0];
+        var nb_red = 0;
+        var nb_white = 0;
+
+        function reset()
+        {
+            initArray();
+            generateCode();
+            createAllLines();
+            current_line = 0;
+            nb_red = 0;
+            nb_white = 0;
+            hideResponse();
+        }
+
+        function initArray()
+        {
+            tab = new Array(max_lines);
+
+            for (var i = 0; i < max_lines; i++)
+            {
+              tab[i] = new Array(4).fill(-1);
+            }
+        }
+
+        // Generate the code
+        function generateCode()
+        {
+          var min = 0;
+          var max = 7;
+
+          for (var i = 0; i < win.length; i++)
+          {
+            win[i] = Math.floor(Math.random()*(max - min + 1) + min);
+          }
+        }
+
+        // Print array
+        function printArray()
+        {
+            for (var i = 0; i < tab.length; i++)
+            {
+
+              var mes = "[";
+              for (var j = 0; j < tab[i].length; j++)
+              {
+                mes += tab[i][j]+","
+              }
+              mes += "]";
+              console.log("L: "+i+" Tab="+mes);
+            }
+        }
+
+        // If the player has won
+        function hasWon()
+        {
+            var win = false;
+
+            if(nb_red == 4)
+            {
+                win = true
+            }
+
+            return win;
+        }
+
+        // If it is finsih, no line
+        function isFinish()
+        {
+            var finish = false;
+
+            if(current_line == (max_lines - 1))
+            {
+                finish = true;
+            }
+
+            return finish;
+        }
+
+        function showResponse()
+        {
+            var response = document.getElementsByClassName("response")[0];
+            response.innerHTML = "<h3>Solution</h3>";
+
+            for (var i = 0; i < win.length; i++)
+            {
+              // Creation circle
+              var line_circle = document.createElement('div');
+              line_circle.className = "color circle "+colors_tab[win[i]];
+
+              // Création case
+              var line_case = document.createElement('div');
+              line_case.id = "r1c"+(i+1);
+              line_case.className = "case";
+
+              // Add circle to case
+              line_case.appendChild(line_circle);
+              // Add case to line
+              response.appendChild(line_case);
+
+              response.innerHTML = response.innerHTML+"\n";
+            }
+        }
+
+        function hideResponse()
+        {
+            var response = document.getElementsByClassName("response")[0];
+            response.innerHTML = "<h3>Solution</h3>";
+
+            for (var i = 0; i < win.length; i++)
+            {
+              // Creation circle
+              var line_circle = document.createElement('div');
+              line_circle.className = "color circle none";
+
+              // Création case
+              var line_case = document.createElement('div');
+              line_case.id = "r1c"+(i+1);
+              line_case.className = "case";
+
+              // Add circle to case
+              line_case.appendChild(line_circle);
+              // Add case to line
+              response.appendChild(line_case);
+
+              response.innerHTML = response.innerHTML+"\n";
+            }
+        }
+
+        function createAllLines()
+        {
+            grid.innerHTML = "";
+
+            for (var i = 0; i < max_lines; i++)
+            {
+              // Create nb max lines
+              createLine(i+1);
+            }
+
+            // Add cases listener
+            addCasesListener();
+            // Unlock the first line
+            unlockLine(1);
+            // Create verification to line number 1
+            createVerifButton(1);
+        }
+
+        // Go next line
+        function nextLine()
+        {
+          // if line 0 then l1 to id
+          lockLine(current_line+1);
+          unlockLine(current_line+2);
+          createVerifButton(current_line+2);
+          current_line += 1;
+        }
+
+        // Unlock a line
+        function unlockLine(num_line)
+        {
+            document.getElementById("l"+num_line).className += " active";
+
+            for (var i = 0; i < 4; i++)
+            {
+              // console.log("L"+num_line+"C"+(i+1));
+              var current_case =  document.getElementById("l"+num_line+"c"+(i+1)).getElementsByClassName("lock")[0];
+              current_case.className = current_case.className.replace("lock", "");
+            }
+        }
+
+        // lock a line
+        function lockLine(num_line)
+        {
+            var line = document.getElementById("l"+num_line);
+            line.className = line.className.replace("active", "");
+
+            for (var i = 0; i < 4; i++)
+            {
+              var current_case =  document.getElementById("l"+num_line+"c"+(i+1)).getElementsByClassName("circle")[0];
+              current_case.className = current_case.className+" lock";
+            }
+        }
+
+        // Create verification button number num_lin
+        function createVerifButton(num_line)
+        {
+            var sol = document.getElementById("l"+num_line).getElementsByClassName("solution")[0];
+            sol.innerHTML = "<button id=\"verif\" class=\"verif btn btn-lg\" type=\"button\" name=\"button\" disabled>Vérifier</button>";
+            addButtonListener();
+        }
+
+        // Create line number num_line
+        function createLine(num_line)
+        {
+            // New row
+            var row = document.createElement('div');
+            row.id = "l"+num_line;
+            row.className = "row";
+
+            // New line
+            var line = document.createElement('div');
+            line.className = "col-xs-12 col-sm-8 line";
+
+            // New info
+            var info = document.createElement('div');
+            info.className = "info pull-left";
+            // info.innerHTML = "<h3>Line "+num_line+"</h3>"
+
+            // Add info to new line
+            line.appendChild(info);
+
+            var num = 1;
+            var line_circle = null, line_case = null;
+
+            // Creation none circle to line
+            for (var i = 0; i < 4; i++)
+            {
+               // Creation circle
+               line_circle = document.createElement('div');
+               line_circle.className = "color circle none lock";
+
+               // Création case
+               line_case = document.createElement('div');
+               line_case.id = "l"+num_line+"c"+num;
+               line_case.className = "case";
+
+               // Add circle to case
+               line_case.appendChild(line_circle);
+               // Add case to line
+               line.appendChild(line_case);
+
+               line.innerHTML = line.innerHTML+"\n";
+               num += 1;
+            }
+
+            // Add line to new row
+            row.appendChild(line);
+
+            // Creation button to solution
+            var sol = document.createElement('div');
+            sol.className = "col-xs-12 col-sm-4 solution";
+
+            // Add solution to new row
+            row.appendChild(sol);
+
+            // Add row to grid
+            grid.appendChild(row);
+        }
+
+        // CREATE SOLUTION WITH RED & WHITE CASES
+        function createSolution()
+        {
+          // Get solution div form current line
+          var num_line = current_line+1;
+          var sol = document.getElementById("l"+num_line).getElementsByClassName('solution')[0];
+          sol.innerHTML = "";
+
+          var num = 1;
+          var sol_circle = null, sol_case = null;
+
+          // Creation red circle
+          for (var i = 0; i < nb_red; i++)
+          {
+            // Création circle
+            sol_circle = document.createElement('div');
+            sol_circle.className = "color circle red";
+
+            // Création case
+            sol_case = document.createElement('div');
+            sol_case.id = "s"+num_line+"c"+num;
+            sol_case.className = "case";
+
+            // Add circle to case
+            sol_case.appendChild(sol_circle);
+            // Add case to solution
+            sol.appendChild(sol_case);
+            sol.innerHTML = sol.innerHTML+"\n";
+
+            num += 1;
+          }
+
+          // Creation white circle
+          for (var i = 0; i < nb_white; i++)
+          {
+            // Création circle
+            sol_circle = document.createElement('div');
+            sol_circle.className = "color circle white";
+
+            // Création case
+            sol_case = document.createElement('div');
+            sol_case.id = "s"+num_line+"c"+num;
+            sol_case.className = "case";
+
+            // Add circle to case
+            sol_case.appendChild(sol_circle);
+            // Add case to solution
+            sol.appendChild(sol_case);
+            sol.innerHTML = sol.innerHTML+"\n";
+
+            num += 1;
+          }
+
+          // Creation none circle
+          var nb_none = 4 - (nb_red + nb_white);
+
+          for (var i = 0; i < nb_none; i++)
+          {
+            // Création circle
+            sol_circle = document.createElement('div');
+            sol_circle.className = "color circle none";
+
+            // Création case
+            var sol_case = document.createElement('div');
+            sol_case.id = "s"+num_line+"c"+num;
+            sol_case.className = "case";
+
+            // Add circle to case
+            sol_case.appendChild(sol_circle);
+            // Add case to solution
+            sol.appendChild(sol_case);
+            sol.innerHTML = sol.innerHTML+"\n";
+
+            num += 1;
+          }
+        }
+
+        // VERIFICATION OF CASES
+        function verification()
+        {
+          nb_red = 0;
+          nb_white = 0;
+
+          var good = [false, false, false, false];
+          var claim = [false, false, false, false];
+
+          // Test bonne position
+          for (var i = 0; i < tab[current_line].length; i++)
+          {
+            if(tab[current_line][i] == win[i])
+            {
+              nb_red += 1;
+              good[i] = true;
+              claim[i] = true;
+            }
+          }
+
+          // Test si existe
+          for (var i = 0; i < tab[current_line].length; i++)
+          {
+            // Si pas bien positionné, on regarde si existe ailleurs
+            if(!good[i])
+            {
+              j = 0;
+              var out = false;
+
+              while(j < win.length && !out)
+              {
+                // Si égaux et non compté
+                if ((tab[current_line][i] == win[j]) && (claim[j] == false))
+                {
+                  claim[j] = true;
+                  nb_white += 1;
+
+                  // On sort
+                  out = true;
+                }
+                j++;
+              }
+            }
+
+          }
+        }
+
+        // CHANGE COLOR PALETTE
+        function changeColor(id)
+        {
+          if(/^c([0-9]{1})$/.test(id))
+          {
+            current_color = RegExp.$1 - 1;
+            select_color.className = "color circle "+colors_tab[current_color];
+          }
+        }
+
+        // ADD COLOR TO A CASE
+        function addColor(id, list_class)
+        {
+          // alert("ID "+id+" CLASS "+list_class);
+          if(/circle/.test(list_class) && !/lock/.test(list_class))
+          {
+            // alert('Test '+document.getElementById(id).childNodes[0].className);
+            if(document.getElementById(id).childNodes[0].className === undefined)
+            {
+              document.getElementById(id).childNodes[1].className = "color circle "+colors_tab[current_color];
+            }
+            else document.getElementById(id).childNodes[0].className = "color circle "+colors_tab[current_color];
+
+
+            if(/^l([0-9]{1,2})c([0-9]{1,2})$/.test(id))
+            {
+              var indexLine = RegExp.$1 - 1;
+              var indexColumn = RegExp.$2 - 1;
+
+              tab[indexLine][indexColumn] = current_color;
+            }
+          }
+        }
+
+        // ENABLE VERIFICATION BUTTON
+        function enableButton()
+        {
+          var enable = false;
+          var i = 0;
+
+          while(i < tab[current_line].length && !enable)
+          {
+            if(tab[current_line][i] == -1)
+            {
+              enable = true;
+            }
+
+            i++;
+          }
+
+          if(!enable && (document.getElementById("verif") != null))
+          {
+            document.getElementById("verif").disabled = false;
+          }
+
+        }
+
+
+        // LISTENER
+
+        colors.addEventListener("click", function(e) {
+              changeColor(e.target.id);
+        }, false);
+
+        again.addEventListener("click", function(e) {
+              reset();
+        }, false);
+
+        function addCasesListener()
+        {
+          var lines = document.getElementsByClassName("line");
+
+          for (var i = 0; i < lines.length; i++)
+          {
+            var cases = lines[i].getElementsByClassName('case');
+
+            for (var j = 0; j < cases.length; j++)
+            {
+              cases[j].addEventListener("click", function(e) {
+                    addColor(e.target.parentElement.id, e.target.className);
+                    enableButton();
+              }, false);
+            }
+          }
+        }
+
+        function addButtonListener()
+        {
+          document.getElementById("verif").addEventListener("click", function(e) {
+                verification();
+                createSolution();
+
+                if(hasWon())
+                {
+                  showResponse();
+                  alert('FELICITATION, VOUS AVEZ GAGNE !');
+                }
+                else
+                    {
+                      if (isFinish())
+                      {
+                        lockLine(current_line+1);
+                        showResponse();
+                        alert('DOMMAGE, VOUS AVEZ PERDU !');
+                      }
+                      else nextLine();
+                    }
+          }, false);
+        }
+
+        reset();
+        showResponse();
+
+      </script>
+  </body>
+</html>
